@@ -15,6 +15,8 @@
 #
 LOCAL_PATH := $(call my-dir)
 ROOT_PATH := $(LOCAL_PATH)
+GIT_VERSION = $(shell cd $(LOCAL_PATH)/pegasocks && git rev-parse --short HEAD)
+PGS_VERSION := "\"v0.0.0-$(GIT_VERSION)\""
 
 BUILD_SHARED_EXECUTABLE := $(LOCAL_PATH)/build-shared-executable.mk
 
@@ -143,7 +145,8 @@ LOCAL_CFLAGS := -I$(LOCAL_PATH)/pegasocks/include \
 	-I$(LOCAL_PATH)/libevent/include \
 	-I$(LOCAL_PATH)/pegasocks/3rd-party/libcork/include \
 	-I$(LOCAL_PATH)/pegasocks/3rd-party/ipset/include \
-	-I$(LOCAL_PATH)/pcre
+	-I$(LOCAL_PATH)/pcre \
+	-DPGS_VERSION=$(PGS_VERSION)
 
 
 include $(BUILD_STATIC_LIBRARY)
@@ -187,6 +190,26 @@ libpcre_src_files := \
 LOCAL_SRC_FILES := $(addprefix pcre/, $(libpcre_src_files))
 
 include $(BUILD_STATIC_LIBRARY)
+
+########################################################
+## native libs
+########################################################
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE:= native-libs
+
+LOCAL_C_INCLUDES:= $(LOCAL_PATH)/pegasocks/include
+
+LOCAL_SRC_FILES:= native-libs.cpp
+
+LOCAL_LDLIBS := -ldl -llog
+
+LOCAL_STATIC_LIBRARIES := libpegas
+
+include $(BUILD_SHARED_LIBRARY)
+
+
 
 ### openssl from prefab
 $(call import-module, prefab/openssl)
