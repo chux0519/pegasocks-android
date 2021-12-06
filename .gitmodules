@@ -9,3 +9,6 @@
 	path = app/src/main/jni/libevent
 	url = https://github.com/chux0519/libevent.git
 	branch = android
+[submodule "app/src/main/jni/pcre"]
+	path = app/src/main/jni/pcre
+	url = https://android.googlesource.com/platform/external/pcre
