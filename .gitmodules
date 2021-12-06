@@ -1,0 +1,11 @@
+[submodule "app/src/main/jni/badvpn"]
+	path = app/src/main/jni/badvpn
+	url = https://github.com/mokhtarabadi/badvpn.git
+	branch = android
+[submodule "app/src/main/jni/pegasocks"]
+	path = app/src/main/jni/pegasocks
+	url = https://github.com/chux0519/pegasocks.git
+[submodule "app/src/main/jni/libevent"]
+	path = app/src/main/jni/libevent
+	url = https://github.com/chux0519/libevent.git
+	branch = android
