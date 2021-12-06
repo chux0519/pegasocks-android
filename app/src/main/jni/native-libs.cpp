@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <android/log.h>
-//#include <tun2socks/tun2socks.h>
+#include <tun2socks/tun2socks.h>
 #include <pegasocks/pegas.h>
 
 // Start threads to redirect stdout and stderr to logcat.
@@ -70,8 +70,16 @@ int start_redirecting_stdout_stderr() {
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_hexyoungs_pegasocks_NativeLibs_getPegasVersion(JNIEnv *env, jobject thiz) {
-    char msg[32] = "";
-    pgs_get_version(msg);
-    jstring result = env->NewStringUTF(msg); // C style string to Java String
+    char ver[32] = "";
+    pgs_get_version(ver);
+    jstring result = env->NewStringUTF(ver); // C style string to Java String
+    return result;
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_hexyoungs_pegasocks_NativeLibs_getTun2SocksVersion(JNIEnv *env, jobject thiz) {
+    char ver[32] = "";
+    tun2socks_get_version(ver);
+    jstring result = env->NewStringUTF(ver); // C style string to Java String
     return result;
 }

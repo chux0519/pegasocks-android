@@ -11,8 +11,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         var nl = NativeLibs()
-        val version  = nl.getPegasVersion()
-        println("version: " + version)
+        nl.printNativeLibsVersion();
+
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
