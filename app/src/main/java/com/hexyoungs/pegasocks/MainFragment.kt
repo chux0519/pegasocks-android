@@ -26,8 +26,8 @@ class MainFragment : Fragment() {
         val configText = view.findViewById<TextView>(R.id.txt_config)
         configText.setOnClickListener { _ ->
             findNavController().navigate(R.id.configFragment)
-
         }
+
         return view
     }
 
