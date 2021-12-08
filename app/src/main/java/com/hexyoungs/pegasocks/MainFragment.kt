@@ -26,7 +26,6 @@ class MainFragment : Fragment() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            println(it.resultCode)
             if (it.resultCode == Activity.RESULT_OK) {
                 startVPN()
             }
@@ -43,9 +42,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Switch>(R.id.sw_vpn).setOnCheckedChangeListener { compoundButton, b ->
-            println(b)
             if (b) {
-                println("startVPN")
                 // ask permission first
                 val intent = VpnService.prepare(context)
                 if (intent != null) {
@@ -54,7 +51,6 @@ class MainFragment : Fragment() {
                     startVPN()
                 }
             } else {
-                println("stopVPN")
                 stopVPN()
             }
         }
