@@ -14,67 +14,68 @@ import androidx.core.content.ContextCompat
 
 import android.content.Intent
 import android.net.VpnService
+import android.widget.Toast
 
 
 class MainFragment : Fragment() {
-
     companion object {
         fun newInstance() = MainFragment()
     }
+
+    val getResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            println(it.resultCode)
+            if (it.resultCode == Activity.RESULT_OK) {
+                startVPN()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.main_fragment, container, false)
+        return inflater.inflate(R.layout.main_fragment, container, false)
+    }
 
-        val vpnSw = view.findViewById<Switch>(R.id.sw_vpn)
-        vpnSw.setOnCheckedChangeListener { compoundButton, b ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<Switch>(R.id.sw_vpn).setOnCheckedChangeListener { compoundButton, b ->
+            println(b)
             if (b) {
-                startVPN()
+                println("startVPN")
+                // ask permission first
+                val intent = VpnService.prepare(context)
+                if (intent != null) {
+                    getResult.launch(intent)
+                } else {
+                    startVPN()
+                }
             } else {
+                println("stopVPN")
                 stopVPN()
             }
         }
 
-        val configText = view.findViewById<TextView>(R.id.txt_config)
-        configText.setOnClickListener { _ ->
+        view.findViewById<TextView>(R.id.txt_config).setOnClickListener { _ ->
             findNavController().navigate(R.id.configFragment)
         }
-
-        return view
     }
+
 
     private fun startVPN() {
-        val intent = VpnService.prepare(context)
-        if (intent != null) {
-            // ask for permission
-            getResult.launch(intent)
-        } else {
-            doStart()
-        }
-    }
-
-    private val getResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                doStart()
-            }
-        }
-
-    private fun doStart() {
         val intent = Intent(context, MainService::class.java)
         intent.action = MainService.ACTION_START
 
-        context?.let { ContextCompat.startForegroundService(it, intent) }
+        ContextCompat.startForegroundService(requireContext(), intent)
     }
 
     private fun stopVPN() {
         val intent = Intent(context, MainService::class.java)
         intent.action = MainService.ACTION_STOP
 
-        context?.let { ContextCompat.startForegroundService(it, intent) }
+        ContextCompat.startForegroundService(requireContext(), intent)
     }
 }

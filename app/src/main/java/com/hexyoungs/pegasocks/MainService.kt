@@ -1,5 +1,6 @@
 package com.hexyoungs.pegasocks;
 
+import android.app.Activity
 import android.app.Notification
 import android.content.Context
 import android.content.Intent
@@ -16,6 +17,7 @@ import android.net.NetworkRequest
 import java.lang.Exception
 import android.app.PendingIntent
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 
 import androidx.core.app.NotificationManagerCompat
 
@@ -25,7 +27,6 @@ import java.io.IOException
 import java.net.ServerSocket
 import java.net.Socket
 import java.nio.ByteBuffer
-import java.util.*
 import kotlin.collections.HashSet
 
 
@@ -66,7 +67,7 @@ class MainService : VpnService() {
             stopService();
             return START_NOT_STICKY;
         }
-        startService();
+        startService()
         return START_STICKY;
     }
 
@@ -134,8 +135,8 @@ class MainService : VpnService() {
     }
 
     override fun onDestroy() {
-        stopForeground(true)
         super.onDestroy()
+        stopForeground(true)
     }
 
     override fun onRevoke() {
@@ -143,8 +144,8 @@ class MainService : VpnService() {
     }
 
     override fun onLowMemory() {
-        stopService()
         super.onLowMemory()
+        stopService()
     }
 
     private fun startService() {
@@ -216,7 +217,8 @@ class MainService : VpnService() {
         protectorThread!!.start()
 
         pegaSocksThread = Thread {
-            val result: Boolean = nl!!.startPegaSocks(getPegasConfigABSPath(this), 1)
+            val configPath = getPegasConfigABSPath(this)
+            val result: Boolean = nl!!.startPegaSocks(configPath, 1)
             Log.d(TAG, "pegas stopped, result: $result")
         }
         pegaSocksThread!!.start()
