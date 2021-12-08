@@ -10,7 +10,7 @@ const val PEGAS_CONFIG_FILE = "pegasrc"
 const val PEGAS_LOG_FILE = "pegas.log"
 
 fun loadPegasConfig(context: Context): String {
-    val path = context.getFilesDir()
+    val path = context.filesDir
     val pegasDir = File(path, PEGAS_DIR)
     if(!pegasDir.exists()) {
         pegasDir.mkdirs()
@@ -24,7 +24,7 @@ fun loadPegasConfig(context: Context): String {
 }
 
 fun savePegasConfig(content: String, context: Context) {
-    val path = context.getFilesDir()
+    val path = context.filesDir
     val pegasDir = File(path, PEGAS_DIR)
     if(!pegasDir.exists()) {
         pegasDir.mkdirs()
@@ -33,4 +33,11 @@ fun savePegasConfig(content: String, context: Context) {
     FileOutputStream(file).use {
         it.write(content.toByteArray())
     }
+}
+
+fun getPegasConfigABSPath(context: Context): String {
+    val path = context.filesDir
+    val pegasDir = File(path, PEGAS_DIR)
+    val file = File(pegasDir, PEGAS_CONFIG_FILE)
+    return file.absolutePath
 }

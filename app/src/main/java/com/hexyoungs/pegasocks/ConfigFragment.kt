@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 
 class ConfigFragment : Fragment() {
@@ -29,10 +30,12 @@ class ConfigFragment : Fragment() {
 
         val btn = view.findViewById<Button>(R.id.btn_config_save)
         btn.setOnClickListener { _ ->
+            // read - parse - save and go back to main fragment
             val content = txtEdit.text.toString()
             // TODO: validate
             context?.let { savePegasConfig(content, it) }
             Toast.makeText(context, "config saved", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.mainFragment)
          }
         return view
     }
