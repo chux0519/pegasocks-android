@@ -12,3 +12,7 @@
 	path = app/src/main/jni/badvpn
 	url = https://github.com/chux0519/badvpn.git
 	branch = android
+[submodule "app/src/main/jni/mbedtls"]
+	path = app/src/main/jni/mbedtls
+	url = https://github.com/ARMmbed/mbedtls.git
+	branch = mbedtls-2.7
