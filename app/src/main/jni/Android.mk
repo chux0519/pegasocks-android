@@ -43,26 +43,27 @@ LIBEVENT_SOURCES_CORE := \
     log.c \
     signal.c \
     strlcpy.c \
-    epoll.c poll.c select.c
+    epoll.c poll.c select.c \
+    epoll_sub.c
 
 LOCAL_MODULE := event_core
 LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_CORE))
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
-	-I$(LOCAL_PATH)/libevent/include \
+	-I$(LOCAL_PATH)/libevent/include
 
 include $(BUILD_STATIC_LIBRARY)
 
-# event_openssl
+# event_mbedtls
 include $(CLEAR_VARS)
 
-LIBEVENT_SOURCES_OPENSSL := bufferevent_openssl.c bufferevent_ssl.c
+LIBEVENT_SOURCES_MBEDTLS := bufferevent_mbedtls.c bufferevent_ssl.c
 
-LOCAL_STATIC_LIBRARIES := event_core ssl crypto
-LOCAL_MODULE := event_openssl
-LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_OPENSSL))
+LOCAL_STATIC_LIBRARIES := event_extra event_core mbedtls
+LOCAL_MODULE := event_mbedtls
+LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_MBEDTLS))
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
 	-I$(LOCAL_PATH)/libevent/include \
-
+	-I$(LOCAL_PATH)/mbedtls/include
 include $(BUILD_STATIC_LIBRARY)
 
 
@@ -80,6 +81,7 @@ LOCAL_MODULE := event_extra
 LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_EXTRA))
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
 	-I$(LOCAL_PATH)/libevent/include \
+	-DEVENT__DISABLE_THREAD_SUPPORT=1
 
 include $(BUILD_STATIC_LIBRARY)
 
@@ -105,8 +107,8 @@ PEGAS_SOURCES :=  \
     src/server/manager.c \
     src/server/metrics.c \
     src/server/control.c \
-    src/ssl/openssl.c \
-    src/crypto/openssl.c \
+    src/ssl/mbedtls.c \
+    src/crypto/mbedtls.c \
     3rd-party/parson/parson.c \
     3rd-party/hash_32a.c \
     3rd-party/sha3.c \
@@ -134,8 +136,7 @@ PEGAS_SOURCES :=  \
     3rd-party/ipset/src/libipset/set/ipv6_set.c \
     3rd-party/ipset/src/libipset/set/iterator.c
 
-LOCAL_STATIC_LIBRARIES := event_core event_extra event_openssl \
-    ssl crypto libpcre
+LOCAL_STATIC_LIBRARIES := event_core event_extra event_mbedtls mbedtls pcre
 LOCAL_MODULE := pegas
 LOCAL_SRC_FILES := $(addprefix pegasocks/, $(PEGAS_SOURCES))
 
@@ -146,6 +147,9 @@ LOCAL_CFLAGS := -I$(LOCAL_PATH)/pegasocks/include \
 	-I$(LOCAL_PATH)/pegasocks/3rd-party/libcork/include \
 	-I$(LOCAL_PATH)/pegasocks/3rd-party/ipset/include \
 	-I$(LOCAL_PATH)/pcre \
+	-I$(LOCAL_PATH)/mbedtls/include \
+	-DWITH_ACL=ON \
+	-DUSE_MBEDTLS=ON \
 	-DPGS_VERSION=$(PGS_VERSION)
 
 
@@ -277,6 +281,23 @@ libpcre_src_files := \
 LOCAL_SRC_FILES := $(addprefix pcre/, $(libpcre_src_files))
 
 include $(BUILD_STATIC_LIBRARY)
+
+########################################################
+## mbed TLS
+########################################################
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := mbedtls
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/mbedtls/include
+
+MBEDTLS_SOURCES := $(wildcard $(LOCAL_PATH)/mbedtls/library/*.c)
+
+LOCAL_SRC_FILES := $(MBEDTLS_SOURCES:$(LOCAL_PATH)/%=%)
+
+include $(BUILD_STATIC_LIBRARY)
+
 
 ########################################################
 ## native libs
