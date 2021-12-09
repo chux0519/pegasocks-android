@@ -11,8 +11,8 @@ class PegasConfig(
 
     val log_level: Int?,
     val ping_interval: Int?,
-    val dns_servers: List<String>?,
-    val acl_file: String?,
+    var dns_servers: List<String>?,
+    var acl_file: String?,
     val ssl: SSLConfig?,
     val android: AndroidConfig?,
 )

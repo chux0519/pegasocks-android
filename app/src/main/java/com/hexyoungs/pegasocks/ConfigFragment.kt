@@ -36,7 +36,8 @@ class ConfigFragment : Fragment() {
             val content = txtEdit.text.toString()
             val json = validateConfig(content)
             if(json.isNotEmpty()) {
-                context?.let { com.hexyoungs.pegasocks.savePegasConfig(content, it) }
+                txtEdit.setText(json)
+                context?.let { com.hexyoungs.pegasocks.savePegasConfig(json, it) }
                 android.widget.Toast.makeText(context, "Saved.", android.widget.Toast.LENGTH_LONG).show()
                 findNavController().navigate(com.hexyoungs.pegasocks.R.id.mainFragment)
             } else {
@@ -59,9 +60,17 @@ class ConfigFragment : Fragment() {
         val moshi = Moshi.Builder().build()
         val jsonAdapter: JsonAdapter<PegasConfig> = moshi.adapter(PegasConfig::class.java)
 
-        val config = jsonAdapter.fromJson(json)
-        // TODO: modify ACL, port, control port, protect server etc.
-        
-        return json
+        val config = jsonAdapter.fromJson(json) ?: return ""
+        if(config.acl_file == null) {
+            config.acl_file = getDefaultACLPath(requireContext())
+        }
+        if(config.dns_servers == null) {
+            config.dns_servers = listOf("1.1.1.1", "8.8.8.8", "114.114.114.114")
+        }
+        // config.acl_file = null;
+        val ret = jsonAdapter.toJson(config)
+        println(ret)
+        // TODO: add/override port, control port, protect server etc.
+        return ret
     }
 }

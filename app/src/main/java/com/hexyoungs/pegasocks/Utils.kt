@@ -8,6 +8,7 @@ import java.io.FileOutputStream
 
 const val PEGAS_DIR = "pegas"
 const val PEGAS_CONFIG_FILE = "pegasrc"
+const val PEGAS_ACL_FILE = "default.acl"
 const val PEGAS_LOG_FILE = "pegas.log"
 
 fun loadPegasConfig(context: Context): String {
@@ -44,6 +45,14 @@ fun getPegasConfigABSPath(context: Context): String {
 }
 
 fun  getDefaultACLPath(context: Context): String {
-    val path: Uri = Uri.parse("file:///android_asset/default.acl")
-    return path.toString()
+    val path = context.filesDir
+    val pegasDir = File(path, PEGAS_DIR)
+    val file = File(pegasDir, PEGAS_ACL_FILE)
+    if(!file.exists()) {
+        val s = context.assets.open("default.acl")
+        FileOutputStream(file).use {
+            it.write(s.readBytes())
+        }
+    }
+    return file.absolutePath
 }
