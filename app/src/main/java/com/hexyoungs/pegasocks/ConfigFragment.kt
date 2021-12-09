@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 
 class ConfigFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,10 +34,14 @@ class ConfigFragment : Fragment() {
         btn.setOnClickListener { _ ->
             // read - parse - save and go back to main fragment
             val content = txtEdit.text.toString()
-            // TODO: validate
-            context?.let { savePegasConfig(content, it) }
-            Toast.makeText(context, "config saved", Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.mainFragment)
+            val json = validateConfig(content)
+            if(json.isNotEmpty()) {
+                context?.let { com.hexyoungs.pegasocks.savePegasConfig(content, it) }
+                android.widget.Toast.makeText(context, "Saved.", android.widget.Toast.LENGTH_LONG).show()
+                findNavController().navigate(com.hexyoungs.pegasocks.R.id.mainFragment)
+            } else {
+                android.widget.Toast.makeText(context, "Invalid Config!", android.widget.Toast.LENGTH_LONG).show()
+            }
          }
         return view
     }
@@ -47,5 +53,15 @@ class ConfigFragment : Fragment() {
                 arguments = Bundle().apply {
                 }
             }
+    }
+
+    private fun validateConfig(json: String) : String{
+        val moshi = Moshi.Builder().build()
+        val jsonAdapter: JsonAdapter<PegasConfig> = moshi.adapter(PegasConfig::class.java)
+
+        val config = jsonAdapter.fromJson(json)
+        // TODO: modify ACL, port, control port, protect server etc.
+        
+        return json
     }
 }

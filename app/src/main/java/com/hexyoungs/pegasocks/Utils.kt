@@ -1,6 +1,7 @@
 package com.hexyoungs.pegasocks
 
 import android.content.Context
+import android.net.Uri
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -40,4 +41,9 @@ fun getPegasConfigABSPath(context: Context): String {
     val pegasDir = File(path, PEGAS_DIR)
     val file = File(pegasDir, PEGAS_CONFIG_FILE)
     return file.absolutePath
+}
+
+fun  getDefaultACLPath(context: Context): String {
+    val path: Uri = Uri.parse("file:///android_asset/default.acl")
+    return path.toString()
 }

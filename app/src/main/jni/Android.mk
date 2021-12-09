@@ -316,8 +316,3 @@ LOCAL_LDLIBS := -ldl -llog
 LOCAL_STATIC_LIBRARIES := libpegas libtun2socks
 
 include $(BUILD_SHARED_LIBRARY)
-
-
-
-### openssl from prefab
-$(call import-module, prefab/openssl)
