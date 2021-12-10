@@ -23,7 +23,7 @@ BUILD_SHARED_EXECUTABLE := $(LOCAL_PATH)/build-shared-executable.mk
 ########################################################
 ## libevent
 ########################################################
-# event_core
+# event_mbedtls
 include $(CLEAR_VARS)
 
 LIBEVENT_SOURCES_CORE := \
@@ -33,6 +33,8 @@ LIBEVENT_SOURCES_CORE := \
     bufferevent_pair.c \
     bufferevent_ratelim.c \
     bufferevent_sock.c \
+    bufferevent_mbedtls.c \
+    bufferevent_ssl.c \
     event.c \
     evmap.c \
     evthread.c \
@@ -43,44 +45,21 @@ LIBEVENT_SOURCES_CORE := \
     log.c \
     signal.c \
     strlcpy.c \
-    epoll.c poll.c select.c \
-    epoll_sub.c
+    epoll.c \
+    epoll_sub.c \
+    poll.c \
+    select.c \
+    event_tagging.c \
+	http.c \
+	evdns.c \
+	evrpc.c
 
-LOCAL_MODULE := event_core
+LOCAL_MODULE := event_mbedtls
+LOCAL_STATIC_LIBRARIES := mbedtls
 LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_CORE))
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
-	-I$(LOCAL_PATH)/libevent/include
-
-include $(BUILD_STATIC_LIBRARY)
-
-# event_mbedtls
-include $(CLEAR_VARS)
-
-LIBEVENT_SOURCES_MBEDTLS := bufferevent_mbedtls.c bufferevent_ssl.c
-
-LOCAL_STATIC_LIBRARIES := event_extra event_core mbedtls
-LOCAL_MODULE := event_mbedtls
-LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_MBEDTLS))
-LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
 	-I$(LOCAL_PATH)/libevent/include \
-	-I$(LOCAL_PATH)/mbedtls/include
-include $(BUILD_STATIC_LIBRARY)
-
-
-# event_extra
-include $(CLEAR_VARS)
-
-LIBEVENT_SOURCES_EXTRA := \
-    event_tagging.c \
-    http.c \
-    evdns.c \
-    evrpc.c
-
-LOCAL_STATIC_LIBRARIES := event_core
-LOCAL_MODULE := event_extra
-LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_EXTRA))
-LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
-	-I$(LOCAL_PATH)/libevent/include \
+	-I$(LOCAL_PATH)/mbedtls/include \
 	-DEVENT__DISABLE_THREAD_SUPPORT=1
 
 include $(BUILD_STATIC_LIBRARY)
@@ -136,7 +115,7 @@ PEGAS_SOURCES :=  \
     3rd-party/ipset/src/libipset/set/ipv6_set.c \
     3rd-party/ipset/src/libipset/set/iterator.c
 
-LOCAL_STATIC_LIBRARIES := event_core event_extra event_mbedtls mbedtls pcre
+LOCAL_STATIC_LIBRARIES := event_mbedtls mbedtls pcre
 LOCAL_MODULE := pegas
 LOCAL_SRC_FILES := $(addprefix pegasocks/, $(PEGAS_SOURCES))
 
