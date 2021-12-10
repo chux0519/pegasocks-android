@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.moshi.JsonAdapter
@@ -67,7 +66,7 @@ class ConfigFragment : Fragment() {
         if(config.dns_servers == null) {
             config.dns_servers = listOf("1.1.1.1", "8.8.8.8", "114.114.114.114")
         }
-        // config.acl_file = null;
+
         val ret = jsonAdapter.toJson(config)
         println(ret)
         // TODO: add/override port, control port, protect server etc.

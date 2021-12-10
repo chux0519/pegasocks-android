@@ -23,6 +23,7 @@ import androidx.core.app.NotificationManagerCompat
 
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import java.io.IOException
 import java.net.ServerSocket
 import java.net.Socket
@@ -115,8 +116,9 @@ class MainService : VpnService() {
         notification = NotificationCompat.Builder(this, notificationChannel.id)
             .setContentTitle("VPN Service")
             .setContentText("Pegasocks Started")
-            .setSmallIcon(R.drawable.ic_icon)
-            .addAction(R.drawable.ic_icon_gray, "Stop", stopPendingIntent)
+            .setSmallIcon(R.drawable.ic_notify)
+            .setColor(ContextCompat.getColor(this, R.color.pegas_dark))
+            .addAction(R.drawable.ic_notify, "Stop", stopPendingIntent)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
             .setAutoCancel(true)
