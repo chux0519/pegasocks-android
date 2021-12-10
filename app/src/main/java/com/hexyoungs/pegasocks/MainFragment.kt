@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 
 import android.content.Intent
 import android.net.VpnService
-import android.widget.Toast
 
 
 class MainFragment : Fragment() {
@@ -35,7 +34,10 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        val view = inflater.inflate(R.layout.main_fragment, container, false)
+        view.findViewById<Switch>(R.id.sw_vpn).isChecked = MainService.isTun2SocksRunning
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

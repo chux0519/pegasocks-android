@@ -45,6 +45,8 @@ class MainService : VpnService() {
 
         private const val PRIVATE_NETMASK = "255.255.255.252"
         private const val PRIVATE_MTU = 1500
+
+        var isTun2SocksRunning = false
     }
 
     private var nl: NativeLibs? = null
@@ -59,7 +61,6 @@ class MainService : VpnService() {
     private var protectorThread: Thread? = null
     private var pegaSocksThread: Thread? = null
     private var tun2SocksThread: Thread? = null
-    private var isTun2SocksRunning = false
     private var isNetworkCallbackRegistered = false
 
 
