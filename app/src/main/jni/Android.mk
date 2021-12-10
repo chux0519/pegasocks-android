@@ -23,7 +23,7 @@ BUILD_SHARED_EXECUTABLE := $(LOCAL_PATH)/build-shared-executable.mk
 ########################################################
 ## libevent
 ########################################################
-# event_mbedtls
+# event_openssl
 include $(CLEAR_VARS)
 
 LIBEVENT_SOURCES_CORE := \
@@ -33,7 +33,7 @@ LIBEVENT_SOURCES_CORE := \
     bufferevent_pair.c \
     bufferevent_ratelim.c \
     bufferevent_sock.c \
-    bufferevent_mbedtls.c \
+    bufferevent_openssl.c \
     bufferevent_ssl.c \
     event.c \
     evmap.c \
@@ -54,12 +54,11 @@ LIBEVENT_SOURCES_CORE := \
 	evdns.c \
 	evrpc.c
 
-LOCAL_MODULE := event_mbedtls
-LOCAL_STATIC_LIBRARIES := mbedtls
+LOCAL_MODULE := event_openssl
+LOCAL_STATIC_LIBRARIES := ssl crypto
 LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_CORE))
 LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
 	-I$(LOCAL_PATH)/libevent/include \
-	-I$(LOCAL_PATH)/mbedtls/include \
 	-DEVENT__DISABLE_THREAD_SUPPORT=1
 
 include $(BUILD_STATIC_LIBRARY)
@@ -86,8 +85,8 @@ PEGAS_SOURCES :=  \
     src/server/manager.c \
     src/server/metrics.c \
     src/server/control.c \
-    src/ssl/mbedtls.c \
-    src/crypto/mbedtls.c \
+    src/ssl/openssl.c \
+    src/crypto/openssl.c \
     3rd-party/parson/parson.c \
     3rd-party/hash_32a.c \
     3rd-party/sha3.c \
@@ -115,7 +114,7 @@ PEGAS_SOURCES :=  \
     3rd-party/ipset/src/libipset/set/ipv6_set.c \
     3rd-party/ipset/src/libipset/set/iterator.c
 
-LOCAL_STATIC_LIBRARIES := event_mbedtls mbedtls pcre
+LOCAL_STATIC_LIBRARIES := event_openssl ssl crypto pcre
 LOCAL_MODULE := pegas
 LOCAL_SRC_FILES := $(addprefix pegasocks/, $(PEGAS_SOURCES))
 
@@ -126,9 +125,7 @@ LOCAL_CFLAGS := -I$(LOCAL_PATH)/pegasocks/include \
 	-I$(LOCAL_PATH)/pegasocks/3rd-party/libcork/include \
 	-I$(LOCAL_PATH)/pegasocks/3rd-party/ipset/include \
 	-I$(LOCAL_PATH)/pcre \
-	-I$(LOCAL_PATH)/mbedtls/include \
 	-DWITH_ACL=ON \
-	-DUSE_MBEDTLS=ON \
 	-DPGS_VERSION=$(PGS_VERSION)
 
 
@@ -262,23 +259,6 @@ LOCAL_SRC_FILES := $(addprefix pcre/, $(libpcre_src_files))
 include $(BUILD_STATIC_LIBRARY)
 
 ########################################################
-## mbed TLS
-########################################################
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := mbedtls
-
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/mbedtls/include
-
-MBEDTLS_SOURCES := $(wildcard $(LOCAL_PATH)/mbedtls/library/*.c)
-
-LOCAL_SRC_FILES := $(MBEDTLS_SOURCES:$(LOCAL_PATH)/%=%)
-
-include $(BUILD_STATIC_LIBRARY)
-
-
-########################################################
 ## native libs
 ########################################################
 
@@ -295,3 +275,18 @@ LOCAL_LDLIBS := -ldl -llog
 LOCAL_STATIC_LIBRARIES := libpegas libtun2socks
 
 include $(BUILD_SHARED_LIBRARY)
+
+########################################################
+## prebuilt (openssl)
+########################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := ssl
+LOCAL_SRC_FILES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/lib/libssl.a
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/include
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := crypto
+LOCAL_SRC_FILES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/lib/libcrypto.a
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/include
+include $(PREBUILT_STATIC_LIBRARY)
