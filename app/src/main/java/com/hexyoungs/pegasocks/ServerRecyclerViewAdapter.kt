@@ -27,15 +27,6 @@ class ServerRecyclerViewAdapter(
         )
     }
 
-    suspend fun activateServer(id: String): Boolean {
-        val res = setServer(id)
-        if (res) {
-            val servers = getServers()
-            values = servers
-        }
-        return res
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.idView.text = "(" + item.id.toString() + ")"
@@ -60,6 +51,14 @@ class ServerRecyclerViewAdapter(
         }
     }
 
+    suspend fun activateServer(id: String): Boolean {
+        val res = setServer(id)
+        if (res) {
+            val servers = getServers()
+            values = servers
+        }
+        return res
+    }
 
     override fun getItemCount(): Int = values.size
 

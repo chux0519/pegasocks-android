@@ -158,6 +158,17 @@ suspend fun setServer(id: String): Boolean {
     return ret
 }
 
+suspend fun pingServer(): Boolean {
+    var ret = false
+    withContext(Dispatchers.IO) {
+        val res = PegasCommandSend("ping")
+        if (res.serverResponse.startsWith("OK")) {
+            ret = true;
+        }
+    }
+    return ret
+}
+
 suspend fun getServers(): ArrayList<ServerInfo> {
     var servers = ArrayList<ServerInfo>()
     withContext(Dispatchers.IO)
