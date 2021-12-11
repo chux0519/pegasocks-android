@@ -6,15 +6,15 @@ import com.squareup.moshi.JsonClass
 class PegasConfig(
     val servers: List<PegasServer>,
     val local_address: String?,
-    val local_port: Int?,
-    val control_port: Int?,
+    var local_port: Int?,
+    var control_port: Int?,
 
     val log_level: Int?,
     val ping_interval: Int?,
     var dns_servers: List<String>?,
     var acl_file: String?,
-    val ssl: SSLConfig?,
-    val android: AndroidConfig?,
+    var ssl: SSLConfig?,
+    var android: AndroidConfig?,
 )
 
 @JsonClass(generateAdapter = true)

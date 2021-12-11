@@ -36,6 +36,11 @@ class MainService : VpnService() {
         const val ACTION_START = "pegas_start"
         const val ACTION_STOP = "pegas_stop"
 
+        const val PEGAS_SOCKS5_PORT = 1080
+        const val PEGAS_CONTROL_PORT = 9090
+        const val PROTECT_PORT = 9091
+        const val LOCAL_ADDRESS = "127.0.0.1"
+
         private const val TAG = "vpn_service"
         private const val PRIVATE_VLAN4_CLIENT = "10.0.0.1"
         private const val PRIVATE_VLAN4_ROUTER = "10.0.0.2"
@@ -194,7 +199,7 @@ class MainService : VpnService() {
         // protect server -> pegas -> tun2socks
         protectorThread = Thread {
             try {
-                serverSocket = ServerSocket(9091)
+                serverSocket = ServerSocket(PROTECT_PORT)
                 val buffer: ByteBuffer = ByteBuffer.allocate(4)
                 while (true) {
                     val socket: Socket = serverSocket!!.accept()
@@ -231,8 +236,8 @@ class MainService : VpnService() {
             val result: Boolean = nl!!.startTun2Socks(
                 descriptor!!,
                 PRIVATE_MTU,
-                "127.0.0.1",
-                1080,
+                LOCAL_ADDRESS,
+                PEGAS_SOCKS5_PORT,
                 PRIVATE_VLAN4_ROUTER,
                 PRIVATE_VLAN6_ROUTER,
                 PRIVATE_NETMASK,

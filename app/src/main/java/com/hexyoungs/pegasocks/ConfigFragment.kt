@@ -60,16 +60,19 @@ class ConfigFragment : Fragment() {
         val jsonAdapter: JsonAdapter<PegasConfig> = moshi.adapter(PegasConfig::class.java)
 
         val config = jsonAdapter.fromJson(json) ?: return ""
+
+        // override configs
         if(config.acl_file == null) {
             config.acl_file = getDefaultACLPath(requireContext())
         }
         if(config.dns_servers == null) {
             config.dns_servers = listOf("1.1.1.1", "8.8.8.8", "114.114.114.114")
         }
+        config.local_port = MainService.PEGAS_SOCKS5_PORT
+        config.control_port = MainService.PEGAS_CONTROL_PORT
+        config.android = AndroidConfig(MainService.LOCAL_ADDRESS, MainService.PROTECT_PORT)
+        config.ssl = SSLConfig(false)
 
-        val ret = jsonAdapter.toJson(config)
-        println(ret)
-        // TODO: add/override port, control port, protect server etc.
-        return ret
+        return jsonAdapter.toJson(config)
     }
 }
