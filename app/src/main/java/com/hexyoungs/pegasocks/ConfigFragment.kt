@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.moshi.JsonAdapter
@@ -37,10 +38,10 @@ class ConfigFragment : Fragment() {
             if(json.isNotEmpty()) {
                 txtEdit.setText(json)
                 context?.let { com.hexyoungs.pegasocks.savePegasConfig(json, it) }
-                android.widget.Toast.makeText(context, "Saved.", android.widget.Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Saved.", android.widget.Toast.LENGTH_LONG).show()
                 findNavController().navigate(com.hexyoungs.pegasocks.R.id.mainFragment)
             } else {
-                android.widget.Toast.makeText(context, "Invalid Config!", android.widget.Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Invalid Config!", android.widget.Toast.LENGTH_LONG).show()
             }
          }
         return view

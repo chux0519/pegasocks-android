@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_mainFragment_to_configFragment"
             app:destination="@id/configFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_serverFragment"
+            app:destination="@id/serverFragment" />
     </fragment>
     <fragment
         android:id="@+id/configFragment"
@@ -20,6 +23,15 @@
         tools:layout="@layout/config_fragment" >
         <action
             android:id="@+id/action_configFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/serverFragment"
+        android:name="com.hexyoungs.pegasocks.ServerFragment"
+        android:label="server_list_fragment"
+        tools:layout="@layout/server_list_fragment" >
+        <action
+            android:id="@+id/action_serverFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 
 import android.content.Intent
 import android.net.VpnService
+import android.widget.Toast
 
 
 class MainFragment : Fragment() {
@@ -59,6 +60,14 @@ class MainFragment : Fragment() {
 
         view.findViewById<TextView>(R.id.txt_config).setOnClickListener { _ ->
             findNavController().navigate(R.id.configFragment)
+        }
+
+        view.findViewById<TextView>(R.id.txt_servers).setOnClickListener { _ ->
+            if(MainService.isTun2SocksRunning) {
+                findNavController().navigate(R.id.serverFragment)
+            } else {
+                Toast.makeText(context, "Pegasocks is not running", android.widget.Toast.LENGTH_LONG).show()
+            }
         }
     }
 
