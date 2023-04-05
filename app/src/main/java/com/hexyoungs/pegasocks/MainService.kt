@@ -17,7 +17,6 @@ import android.net.NetworkRequest
 import java.lang.Exception
 import android.app.PendingIntent
 import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
 
 import androidx.core.app.NotificationManagerCompat
 
@@ -106,17 +105,24 @@ class MainService : VpnService() {
         val stopIntent = Intent(this, MainService::class.java)
         stopIntent.action = ACTION_STOP
 
-        val stopPendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PendingIntent.getForegroundService(this, 1, stopIntent, 0)
+
+        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         } else {
-            PendingIntent.getService(this, 1, stopIntent, 0)
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+
+        val stopPendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntent.getForegroundService(this, 1, stopIntent, pendingIntentFlags)
+        } else {
+            PendingIntent.getService(this, 1, stopIntent, pendingIntentFlags)
         }
 
         val contentPendingIntent = PendingIntent.getActivity(
             this, 2, Intent(
                 this,
                 MainActivity::class.java
-            ), 0
+            ), pendingIntentFlags
         )
 
         notification = NotificationCompat.Builder(this, notificationChannel.id)
