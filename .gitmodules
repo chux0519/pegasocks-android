@@ -10,7 +10,7 @@
 	url = https://android.googlesource.com/platform/external/pcre
 [submodule "app/src/main/jni/badvpn"]
 	path = app/src/main/jni/badvpn
-	url = https://github.com/chux0519/badvpn.git
+	url = https://github.com/shadowsocks/badvpn.git
 	branch = android
 [submodule "app/src/main/jni/libancillary"]
 	path = app/src/main/jni/libancillary
