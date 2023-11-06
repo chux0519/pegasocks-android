@@ -2,15 +2,16 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    compileSdk 31
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.hexyoungs.pegasocks"
         minSdk 21
-        targetSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -52,6 +53,8 @@ android {
 dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:+'
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
