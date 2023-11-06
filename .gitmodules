@@ -15,3 +15,6 @@
 [submodule "app/src/main/jni/libancillary"]
 	path = app/src/main/jni/libancillary
 	url = https://github.com/shadowsocks/libancillary.git
+[submodule "app/src/main/jni/hev-socks5-tunnel"]
+	path = app/src/main/jni/hev-socks5-tunnel
+	url = https://github.com/heiher/hev-socks5-tunnel
