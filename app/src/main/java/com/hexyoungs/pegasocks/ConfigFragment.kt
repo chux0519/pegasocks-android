@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class ConfigFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +58,11 @@ class ConfigFragment : Fragment() {
     }
 
     private fun validateConfig(json: String) : String{
-        val moshi = Moshi.Builder().build()
+        // FIXME: crash
+//        return json
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
         val jsonAdapter: JsonAdapter<PegasConfig> = moshi.adapter(PegasConfig::class.java)
 
         val config = jsonAdapter.fromJson(json) ?: return ""
@@ -69,9 +74,9 @@ class ConfigFragment : Fragment() {
         if(config.dns_servers == null) {
             config.dns_servers = listOf("1.1.1.1", "8.8.8.8", "114.114.114.114")
         }
-        config.local_port = MainService.PEGAS_SOCKS5_PORT
-        config.control_port = MainService.PEGAS_CONTROL_PORT
-        config.android = AndroidConfig(MainService.LOCAL_ADDRESS, MainService.PROTECT_PORT)
+        config.local_port = TProxyService.PEGAS_SOCKS5_PORT
+        config.control_port = TProxyService.PEGAS_CONTROL_PORT
+        config.android = AndroidConfig(TProxyService.LOCAL_ADDRESS, TProxyService.PROTECT_PORT)
         config.ssl = SSLConfig(false)
 
         return jsonAdapter.toJson(config)

@@ -128,7 +128,7 @@ class PegasCommandSend(private var cmd: String) {
 
     init {
         try {
-            val socket = openSocket(MainService.LOCAL_ADDRESS, MainService.PEGAS_CONTROL_PORT)
+            val socket = openSocket(TProxyService.LOCAL_ADDRESS, TProxyService.PEGAS_CONTROL_PORT)
             serverResponse = writeToAndReadFromSocket(socket, cmd)
             socket.close()
         } catch (e: Exception) {

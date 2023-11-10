@@ -15,10 +15,16 @@
 #
 LOCAL_PATH := $(call my-dir)
 ROOT_PATH := $(LOCAL_PATH)
+
+########################################################
+## hev-socks5-tunnel
+########################################################
+include $(call all-subdir-makefiles)
+include $(CLEAR_VARS)
+
+LOCAL_PATH := $(ROOT_PATH)
 GIT_VERSION = $(shell cd $(LOCAL_PATH)/pegasocks && git rev-parse --short HEAD)
 PGS_VERSION := "\"v0.0.0-$(GIT_VERSION)\""
-
-BUILD_SHARED_EXECUTABLE := $(LOCAL_PATH)/build-shared-executable.mk
 
 ########################################################
 ## libevent
@@ -57,8 +63,8 @@ LIBEVENT_SOURCES_CORE := \
 LOCAL_MODULE := event_openssl
 LOCAL_STATIC_LIBRARIES := ssl crypto
 LOCAL_SRC_FILES := $(addprefix libevent/, $(LIBEVENT_SOURCES_CORE))
-LOCAL_CFLAGS := -I$(LOCAL_PATH)/libevent \
-	-I$(LOCAL_PATH)/libevent/include \
+LOCAL_CFLAGS := -I$(ROOT_PATH)/libevent \
+	-I$(ROOT_PATH)/libevent/include \
 	-DEVENT__DISABLE_THREAD_SUPPORT=1
 
 include $(BUILD_STATIC_LIBRARY)
@@ -112,110 +118,22 @@ LOCAL_STATIC_LIBRARIES := event_openssl ssl crypto pcre
 LOCAL_MODULE := pegas
 LOCAL_SRC_FILES := $(addprefix pegasocks/, $(PEGAS_SOURCES))
 
-LOCAL_CFLAGS := -I$(LOCAL_PATH)/pegasocks/include \
-	-I$(LOCAL_PATH)/pegasocks/include/pegasocks \
-	-I$(LOCAL_PATH)/pegasocks/3rd-party \
-	-I$(LOCAL_PATH)/libevent/include \
-	-I$(LOCAL_PATH)/pegasocks/3rd-party/libcork/include \
-	-I$(LOCAL_PATH)/pegasocks/3rd-party/ipset/include \
-	-I$(LOCAL_PATH)/pcre \
+LOCAL_CFLAGS := -I$(ROOT_PATH)/pegasocks/include \
+	-I$(ROOT_PATH)/pegasocks/include/pegasocks \
+	-I$(ROOT_PATH)/pegasocks/3rd-party \
+	-I$(ROOT_PATH)/libevent/include \
+	-I$(ROOT_PATH)/pegasocks/3rd-party/libcork/include \
+	-I$(ROOT_PATH)/pegasocks/3rd-party/ipset/include \
+	-I$(ROOT_PATH)/pcre \
 	-DWITH_ACL=ON \
 	-DPGS_VERSION=$(PGS_VERSION)
 
 
 include $(BUILD_STATIC_LIBRARY)
 
-
-########################################################
-## tun2socks
-########################################################
-
-include $(CLEAR_VARS)
-
-LOCAL_CFLAGS := -std=gnu99
-LOCAL_CFLAGS += -DBADVPN_THREADWORK_USE_PTHREAD -DBADVPN_LINUX -DBADVPN_BREACTOR_BADVPN -D_GNU_SOURCE
-LOCAL_CFLAGS += -DBADVPN_USE_SELFPIPE -DBADVPN_USE_EPOLL
-LOCAL_CFLAGS += -DBADVPN_LITTLE_ENDIAN -DBADVPN_THREAD_SAFE
-LOCAL_CFLAGS += -DNDEBUG -DANDROID
-
-LOCAL_C_INCLUDES:= \
-        $(LOCAL_PATH)/badvpn/lwip/src/include/ipv4 \
-        $(LOCAL_PATH)/badvpn/lwip/src/include/ipv6 \
-        $(LOCAL_PATH)/badvpn/lwip/src/include \
-        $(LOCAL_PATH)/badvpn/lwip/custom \
-        $(LOCAL_PATH)/badvpn/
-
-TUN2SOCKS_SOURCES := \
-        base/BLog_syslog.c \
-        system/BReactor_badvpn.c \
-        system/BSignal.c \
-        system/BConnection_unix.c \
-        system/BConnection_common.c \
-        system/BTime.c \
-        system/BUnixSignal.c \
-        system/BNetwork.c \
-        system/BDatagram_common.c \
-        system/BDatagram_unix.c \
-        flow/StreamRecvInterface.c \
-        flow/PacketRecvInterface.c \
-        flow/PacketPassInterface.c \
-        flow/StreamPassInterface.c \
-        flow/SinglePacketBuffer.c \
-        flow/BufferWriter.c \
-        flow/PacketBuffer.c \
-        flow/PacketStreamSender.c \
-        flow/PacketPassConnector.c \
-        flow/PacketProtoFlow.c \
-        flow/PacketPassFairQueue.c \
-        flow/PacketProtoEncoder.c \
-        flow/PacketProtoDecoder.c \
-        socksclient/BSocksClient.c \
-        tuntap/BTap.c \
-        lwip/src/core/udp.c \
-        lwip/src/core/memp.c \
-        lwip/src/core/init.c \
-        lwip/src/core/pbuf.c \
-        lwip/src/core/tcp.c \
-        lwip/src/core/tcp_out.c \
-        lwip/src/core/sys.c \
-        lwip/src/core/netif.c \
-        lwip/src/core/def.c \
-        lwip/src/core/mem.c \
-        lwip/src/core/tcp_in.c \
-        lwip/src/core/stats.c \
-        lwip/src/core/ip.c \
-        lwip/src/core/timeouts.c \
-        lwip/src/core/inet_chksum.c \
-        lwip/src/core/ipv4/icmp.c \
-        lwip/src/core/ipv4/ip4.c \
-        lwip/src/core/ipv4/ip4_addr.c \
-        lwip/src/core/ipv4/ip4_frag.c \
-        lwip/src/core/ipv6/ip6.c \
-        lwip/src/core/ipv6/nd6.c \
-        lwip/src/core/ipv6/icmp6.c \
-        lwip/src/core/ipv6/ip6_addr.c \
-        lwip/src/core/ipv6/ip6_frag.c \
-        lwip/custom/sys.c \
-        tun2socks/tun2socks.c \
-        base/DebugObject.c \
-        base/BLog.c \
-        base/BPending.c \
-        flowextra/PacketPassInactivityMonitor.c \
-        tun2socks/SocksUdpGwClient.c \
-        udpgw_client/UdpGwClient.c \
-        socks_udp_client/SocksUdpClient.c \
-
-LOCAL_MODULE := tun2socks
-
-LOCAL_LDLIBS := -ldl -llog
-
-LOCAL_SRC_FILES := $(addprefix badvpn/, $(TUN2SOCKS_SOURCES))
-
-include $(BUILD_STATIC_LIBRARY)
-
-########################################################
-## pcre 
-########################################################
+#########################################################
+### pcre
+#########################################################
 
 include $(CLEAR_VARS)
 
@@ -223,7 +141,7 @@ LOCAL_MODULE := pcre
 
 LOCAL_CFLAGS += -DHAVE_CONFIG_H
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/pcre/dist $(LOCAL_PATH)/pcre
+LOCAL_C_INCLUDES := $(ROOT_PATH)/pcre/dist $(ROOT_PATH)/pcre
 
 libpcre_src_files := \
     pcre_chartables.c \
@@ -260,13 +178,13 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= native-libs
 
-LOCAL_C_INCLUDES:= $(LOCAL_PATH)/pegasocks/include $(LOCAL_PATH)/badvpn
+LOCAL_C_INCLUDES:= $(ROOT_PATH)/pegasocks/include
 
 LOCAL_SRC_FILES:= native-libs.cpp
 
 LOCAL_LDLIBS := -ldl -llog
 
-LOCAL_STATIC_LIBRARIES := libpegas libtun2socks
+LOCAL_STATIC_LIBRARIES := libpegas
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -275,12 +193,12 @@ include $(BUILD_SHARED_LIBRARY)
 ########################################################
 include $(CLEAR_VARS)
 LOCAL_MODULE := ssl
-LOCAL_SRC_FILES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/lib/libssl.a
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/include
+LOCAL_SRC_FILES := $(ROOT_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/lib/libssl.a
+LOCAL_EXPORT_C_INCLUDES := $(ROOT_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/include
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := crypto
-LOCAL_SRC_FILES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/lib/libcrypto.a
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/include
+LOCAL_SRC_FILES := $(ROOT_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/lib/libcrypto.a
+LOCAL_EXPORT_C_INCLUDES := $(ROOT_PATH)/prebuilt/openssl/$(TARGET_ARCH_ABI)/include
 include $(PREBUILT_STATIC_LIBRARY)

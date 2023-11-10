@@ -36,7 +36,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.main_fragment, container, false)
-        view.findViewById<Switch>(R.id.sw_vpn).isChecked = MainService.isTun2SocksRunning
+        view.findViewById<Switch>(R.id.sw_vpn).isChecked = TProxyService.isTun2SocksRunning
 
         return view
     }
@@ -63,7 +63,7 @@ class MainFragment : Fragment() {
         }
 
         view.findViewById<TextView>(R.id.txt_servers).setOnClickListener { _ ->
-            if(MainService.isTun2SocksRunning) {
+            if(TProxyService.isTun2SocksRunning) {
                 findNavController().navigate(R.id.serverFragment)
             } else {
                 Toast.makeText(context, "Pegasocks is not running", android.widget.Toast.LENGTH_LONG).show()
@@ -73,15 +73,15 @@ class MainFragment : Fragment() {
 
 
     private fun startVPN() {
-        val intent = Intent(context, MainService::class.java)
-        intent.action = MainService.ACTION_START
+        val intent = Intent(context, TProxyService::class.java)
+        intent.action = TProxyService.ACTION_START
 
         ContextCompat.startForegroundService(requireContext(), intent)
     }
 
     private fun stopVPN() {
-        val intent = Intent(context, MainService::class.java)
-        intent.action = MainService.ACTION_STOP
+        val intent = Intent(context, TProxyService::class.java)
+        intent.action = TProxyService.ACTION_STOP
 
         ContextCompat.startForegroundService(requireContext(), intent)
     }

@@ -1,9 +1,9 @@
 package com.hexyoungs.pegasocks
 
-import com.squareup.moshi.JsonClass
+import com.squareup.moshi.*
 
 @JsonClass(generateAdapter = true)
-class PegasConfig(
+data class PegasConfig(
     val servers: List<PegasServer>,
     val local_address: String?,
     var local_port: Int?,
@@ -18,18 +18,18 @@ class PegasConfig(
 )
 
 @JsonClass(generateAdapter = true)
-class SSLConfig (
+data class SSLConfig (
     val verify: Boolean
 )
 
 @JsonClass(generateAdapter = true)
-class AndroidConfig(
+data class AndroidConfig(
     val protect_address: String,
     val protect_port: Int,
 )
 
 @JsonClass(generateAdapter = true)
-class PegasServer(
+data class PegasServer(
     val server_address: String,
     val server_type: String,
     val server_port: Int,
@@ -41,12 +41,12 @@ class PegasServer(
 )
 
 @JsonClass(generateAdapter = true)
-class ServerSSLConfig(
+data class ServerSSLConfig(
     val sni: String?,
 )
 
 @JsonClass(generateAdapter = true)
-class ServerWSConfig(
+data class ServerWSConfig(
     val path: String?,
     val hostname: String?,
 )
